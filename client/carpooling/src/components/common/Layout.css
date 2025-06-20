@@ -1,0 +1,114 @@
+.layout {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.navbar-container {
+  width: 100vw;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  height: 4rem;
+  align-items: center;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .navbar-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+}
+
+.navbar-link {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.navbar-link:hover {
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.navbar-link.active {
+  color: #111827;
+  border-color: #3b82f6;
+}
+
+/* Right side auth links */
+.navbar-right {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .navbar-right {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.auth-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.auth-link {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.auth-link:hover {
+  color: #374151;
+}
+
+.logout {
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+/* Main content */
+.main-content {
+  padding: 2rem 0;
+}
+
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}

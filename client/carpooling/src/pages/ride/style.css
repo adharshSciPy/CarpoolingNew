@@ -1,0 +1,353 @@
+.rides-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.rides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.status-msg {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.status-msg.error {
+  color: red;
+}
+
+.no-rides-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+}
+
+.ride-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.ride-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+}
+
+.ride-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.ride-header h1 {
+  font-size: 1.5rem;
+  color: #1a202c;
+}
+
+.ride-header p {
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.seats-badge {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+}
+
+.ride-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.ride-details h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+.ride-info p {
+  margin: 0.25rem 0;
+  color: #1a202c;
+}
+
+.ride-passengers {
+  margin-top: 1.5rem;
+}
+
+.ride-passenger {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ride-subtext {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.ride-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.book-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  height: 50px;
+  margin-top: 45px;
+}
+
+.book-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.book-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.booked-status {
+  background-color: #d1fae5;
+  color: #065f46;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.ride-loading,
+.ride-error {
+  text-align: center;
+  font-size: 1rem;
+  color: #4b5563;
+  padding: 2rem;
+}
+
+
+/* Container */
+.myrides-container {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 12px;
+}
+
+.tab {
+  padding: 10px 20px;
+  background-color: #e3e3e3;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #555;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab:hover {
+  background-color: #ccc;
+}
+
+.tab.active {
+  background-color: #2563eb;
+  color: white;
+}
+
+/* Empty state */
+.empty-state {
+  background-color: #fafafa;
+  padding: 40px 20px;
+  text-align: center;
+  border-radius: 12px;
+  color: #666;
+  font-size: 16px;
+}
+
+.create-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.create-link:hover {
+  text-decoration: underline;
+}
+
+/* Ride Cards */
+.rides-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ride-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.ride-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Ride Header */
+.ride-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.ride-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+}
+
+.ride-header p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Status Badge */
+.status {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  user-select: none;
+}
+
+.status-completed {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-pending {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+/* Ride Info Grid */
+.ride-info {
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.ride-info div {
+  min-width: 120px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+  margin-bottom: 4px;
+}
+
+/* Ride Footer */
+.ride-footer {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.details-link {
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  text-decoration: underline;
+}
+
+/* Loading & Error */
+.error p {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.whatsapp-btn {
+  margin-top: 1rem;
+}
+
+.whatsapp-btn a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #25d366;
+  color: white;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.whatsapp-btn a:hover {
+  background-color: #1da851;
+}
+
+.whatsapp-btn i {
+  font-size: 1.2rem;
+}
