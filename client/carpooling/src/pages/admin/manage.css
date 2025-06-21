@@ -1,38 +1,178 @@
-.admin {
-  width: 1200px;
-  padding: 20px;
-}
-.wallet-container {
-  padding: 20px;
+.dashboard {
   max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 30px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f9fafb;
+  color: #333;
 }
 
-.wallet-title {
-  font-size: 24px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  font-size: 1.8rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.filters select,
+.filters input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.table-container {
+  background: #fff;
+  border-radius: 8px;
+  overflow-x: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-container th,
+.table-container td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.sub {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: bold;
-  margin-bottom: 16px;
-  text-align: center;
+  display: inline-block;
+}
+
+.status.approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.btn-approve {
+  padding: 6px 12px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-approve:hover {
+  background: #059669;
+}
+
+.verified {
+  color: green;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.view-link {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.view-link:hover {
+  text-decoration: underline;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wallet-container {
+  margin-top: 3rem;
+}
+
+.wallet-container h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .wallet-table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .wallet-table th,
 .wallet-table td {
-  border: 1px solid #ddd;
-  padding: 12px 16px;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.no-data {
   text-align: center;
+  padding: 1rem;
+  color: #888;
 }
 
-.wallet-table thead {
-  background-color: #f2f2f2;
+.loader {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+.pagination button {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f3f4f6; /* Light gray */
+  color: #333;               /* Dark text */
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
 }
 
-.wallet-table tbody tr:hover {
-  background-color: #f9f9f9;
+.pagination button:hover:not(:disabled) {
+  background-color: #e5e7eb; /* Slightly darker on hover */
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

@@ -1,4 +1,5 @@
 const Chat=require("../models/chat.js")
+const AdminWallet=require('../models/adminWallet.js')
 
 exports.sendMessage = async (req, res) => {
   const { rideId, userId, driverId, senderId, senderRole, text } = req.body;
@@ -87,3 +88,12 @@ exports.getChatsForDriver = async (req, res) => {
 };
 
 
+exports.getAdminWallet = async (req, res) => {
+  try {
+    const records = await AdminWallet.find().sort({ _id: -1 }); // optional: sort newest first
+    res.status(200).json({ success: true, data: records });
+  } catch (err) {
+    console.error("Fetch Admin Wallet Error:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch admin wallet data" });
+  }
+};

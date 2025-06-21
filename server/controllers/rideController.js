@@ -1,5 +1,6 @@
 const Ride = require("../models/Ride");
 const Driver = require("../models/Driver");
+const AdminWallet=require("../models/adminWallet")
 
 exports.getRides = async (req, res, next) => {
   try {
@@ -192,8 +193,9 @@ exports.deleteRide = async (req, res, next) => {
 exports.bookRide = async (req, res, next) => {
   try {
     const { rideId, userId } = req.params;
-    const ride = await Ride.findById(rideId);
+    const { pickupLocation, dropoffLocation, fare } = req.body;
 
+    const ride = await Ride.findById(rideId);
     if (!ride) {
       return res.status(404).json({
         success: false,
@@ -208,19 +210,38 @@ exports.bookRide = async (req, res, next) => {
       });
     }
 
+    const numericFare = parseFloat(fare);
+    if (isNaN(numericFare)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid fare value",
+      });
+    }
+
+    const adminCommission = +(numericFare * 0.002).toFixed(2); // 0.2%
+    const userFare = +(numericFare - adminCommission).toFixed(2);
+
     ride.passengers.push({
-      user: userId, // ✅ now using the correct ID
-      pickupLocation: req.body.pickupLocation,
-      dropoffLocation: req.body.dropoffLocation,
-      fare: req.body.fare,
+      user: userId,
+      pickupLocation,
+      dropoffLocation,
+      fare: numericFare,
       status: "completed",
     });
 
     ride.availableSeats -= 1;
     await ride.save();
 
+    const adminShare = new AdminWallet({
+      rideId,
+      userId,
+      share: adminCommission,
+    });
+    await adminShare.save();
+
     res.status(200).json({
       success: true,
+      message: "Ride booked successfully",
       data: ride,
     });
   } catch (err) {
@@ -228,6 +249,7 @@ exports.bookRide = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 
 

@@ -55,3 +55,52 @@
 .btn-pay:hover {
   background-color: #2563eb;
 }
+.booking-confirmation {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f0fdf4;
+  border: 1px solid #d1fae5;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 128, 0, 0.05);
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.success-icon {
+  font-size: 3rem;
+  color: #10b981;
+  margin-bottom: 1rem;
+}
+
+.thank-you-msg {
+  font-size: 1.2rem;
+  color: #065f46;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.confirmation-details {
+  text-align: left;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin: 0 auto 1.5rem;
+  max-width: 400px;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.confirmation-details p {
+  margin-bottom: 0.5rem;
+}
+
+.redirect-msg {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

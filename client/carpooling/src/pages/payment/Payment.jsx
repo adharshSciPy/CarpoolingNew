@@ -7,10 +7,8 @@ import api from "../../services/api";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log("Payment props:", location.state);
 
-
-  const { rideId, pickupLocation, dropoffLocation, fare,userId } = location.state || {};
+  const { rideId, pickupLocation, dropoffLocation, fare, userId } = location.state || {};
 
   const [paymentDetails, setPaymentDetails] = useState({
     name: "",
@@ -21,6 +19,9 @@ const Payment = () => {
 
   const [bookingData, setBookingData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const commission = (fare * 0.002).toFixed(2); // 0.2%
+  const total = (parseFloat(fare) + parseFloat(commission)).toFixed(2);
 
   const handleChange = (e) => {
     setPaymentDetails({ ...paymentDetails, [e.target.name]: e.target.value });
@@ -39,18 +40,19 @@ const Payment = () => {
     try {
       toast.info("Processing payment...");
 
-      // Booking API call
       const { data } = await api.post(`/rides/${rideId}/book/${userId}`, {
-  pickupLocation,
-  dropoffLocation,
-  fare,
-});
+        pickupLocation,
+        dropoffLocation,
+        fare, // base fare sent; commission handled in backend
+      });
 
       toast.success("Payment & Booking successful!");
       setBookingData({
         pickupLocation,
         dropoffLocation,
         fare,
+        commission,
+        total,
         status: data?.status || "Confirmed",
       });
 
@@ -119,27 +121,34 @@ const Payment = () => {
             </label>
           </div>
 
+          <div className="fare-breakdown">
+            <p><strong>Base Fare:</strong> ₹{fare}</p>
+            <p><strong>Processing Fee (0.2%):</strong> ₹{commission}</p>
+            <p><strong>Total:</strong> ₹{total}</p>
+          </div>
+
           <button type="submit" className="btn-pay" disabled={loading}>
-            {loading ? "Processing..." : `Pay ₹${fare}`}
+            {loading ? "Processing..." : `Pay ₹${total}`}
           </button>
         </form>
       ) : (
         <div className="booking-confirmation">
-          <h3>Booking Confirmed!</h3>
-          <p>
-            <strong>From:</strong> {bookingData.pickupLocation}
-          </p>
-          <p>
-            <strong>To:</strong> {bookingData.dropoffLocation}
-          </p>
-          <p>
-            <strong>Amount Paid:</strong> ₹{bookingData.fare}
-          </p>
-          <p>
-            <strong>Status:</strong> {bookingData.status}
-          </p>
-          <p>You will be redirected shortly...</p>
-        </div>
+  <div className="success-icon">✅</div>
+  <h3>Payment Successful!</h3>
+  <p className="thank-you-msg">Thank you for your booking.</p>
+
+  <div className="confirmation-details">
+    <p><strong>From:</strong> {bookingData.pickupLocation}</p>
+    <p><strong>To:</strong> {bookingData.dropoffLocation}</p>
+    <p><strong>Base Fare:</strong> ₹{bookingData.fare}</p>
+    <p><strong>Processing Fee:</strong> ₹{bookingData.commission}</p>
+    <p><strong>Total Paid:</strong> ₹{bookingData.total}</p>
+    <p><strong>Status:</strong> {bookingData.status}</p>
+  </div>
+
+  <p className="redirect-msg">You will be redirected to <strong>My Rides</strong> shortly...</p>
+</div>
+
       )}
     </div>
   );
