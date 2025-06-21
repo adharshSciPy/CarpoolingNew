@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import "./manage.css"
 
 const ManageDrivers = () => {
   const [allDrivers, setAllDrivers] = useState([]);
@@ -80,8 +81,16 @@ const ManageDrivers = () => {
 
   if (loading) return <div className="p-4">Loading drivers...</div>;
 
+  const wallet = [
+    { User: "Userone", Ride: "Rideone", Share: "Shareohne" },
+    { User: "Usertwo", Ride: "Ridetwo", Share: "Shareotwo" },
+    { User: "Userthree", Ride: "Ridethree", Share: "Sharethree" },
+    { User: "Userfour", Ride: "Ridefour", Share: "Sharefour" },
+    { User: "Userfive", Ride: "Ridefive", Share: "Sharefive" }
+  ]
+
   return (
-    <div className="p-6">
+    <div className="admin">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Manage Drivers</h2>
         <div className="flex space-x-4">
@@ -187,6 +196,28 @@ const ManageDrivers = () => {
         >
           Next
         </button>
+      </div>
+
+      <div className="wallet-container">
+        <h2 className="wallet-title">Wallet Table</h2>
+        <table className="wallet-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Ride</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            {wallet.map((item, index) => (
+              <tr key={index}>
+                <td>{item.User}</td>
+                <td>{item.Ride}</td>
+                <td>{item.Share}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

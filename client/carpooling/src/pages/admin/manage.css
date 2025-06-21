@@ -1,0 +1,38 @@
+.admin {
+  width: 1200px;
+  padding: 20px;
+}
+.wallet-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.wallet-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.wallet-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.wallet-table th,
+.wallet-table td {
+  border: 1px solid #ddd;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.wallet-table thead {
+  background-color: #f2f2f2;
+}
+
+.wallet-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
