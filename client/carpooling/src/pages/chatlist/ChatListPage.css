@@ -1,70 +1,89 @@
 .chat-list-container {
-  width: 400px;
+  max-width: 580px;
   height: 100vh;
-  border: 1px solid #ccc;
-  margin: 0 auto;
-  font-family: sans-serif;
+  border-radius: 12px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', sans-serif;
   display: flex;
   flex-direction: column;
+  background-color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: none;
 }
 
 .chat-list-header {
-  background: #4a90e2;
+  background: #2563eb;
   color: white;
-  padding: 15px;
-  font-size: 18px;
+  padding: 18px;
+  font-size: 22px;
   font-weight: bold;
   text-align: center;
+  border-bottom: 1px solid #1e40af;
 }
 
 .chat-list {
   flex: 1;
   overflow-y: auto;
-  background: #f9f9f9;
+  background: #f1f5fb;
+  padding: 8px;
 }
 
 .chat-list-item {
   display: flex;
-  padding: 12px 15px;
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  transition: background 0.2s;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .chat-list-item:hover {
-  background: #e6f0ff;
+  background: #e8f0fe;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  margin-right: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #2563eb;
 }
 
 .chat-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .chat-name-time {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 4px;
 }
 
 .chat-name {
-  font-weight: bold;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #111827;
 }
 
 .chat-time {
   font-size: 12px;
-  color: #888;
+  color: #6b7280;
 }
 
 .chat-message {
   font-size: 14px;
-  color: #555;
+  color: #374151;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
