@@ -37,7 +37,7 @@ function App() {
           <Route path="rides" element={<RidesList />} />
           <Route path="rides/:id" element={<RideDetails />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="my-rides" element={<MyRides />} />
+          <Route path="/my-rides" element={<MyRides />} />
 
           {/* Driver Routes (Protected) */}
           <Route

@@ -54,5 +54,5 @@
   });
   // 👇 Prevent OverwriteModelError or cached model issues
 mongoose.models.Ride && delete mongoose.models.Ride;
-
+  
   module.exports = mongoose.model('Ride', RideSchema);

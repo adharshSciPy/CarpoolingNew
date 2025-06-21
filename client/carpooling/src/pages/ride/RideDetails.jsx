@@ -4,12 +4,14 @@ import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { format, parseISO, isBefore } from "date-fns";
 import { toast } from "react-toastify";
+import getDistanceInKm from "../../utils.js";
 import "./style.css";
 
 const RideDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+
   const [ride, setRide] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,11 +35,8 @@ const RideDetails = () => {
     fetchRide();
   }, [id]);
 
-  const handleBookRide = () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
+  const handleBookRide = async () => {
+    if (!user) return navigate("/login");
 
     if (!pickupLocation.trim() || !dropoffLocation.trim()) {
       toast.error("Please enter both pickup and dropoff locations.");
@@ -45,32 +44,38 @@ const RideDetails = () => {
     }
 
     const rideDeparture = parseISO(ride.departureTime);
-    const currentTime = new Date();
-
-    if (isBefore(rideDeparture, currentTime)) {
+    if (isBefore(rideDeparture, new Date())) {
       toast.error("This ride has already departed and cannot be booked.");
       return;
     }
 
-    navigate("/payment", {
-      state: {
-        rideId: ride._id,
-        pickupLocation,
-        dropoffLocation,
-        pricePerSeat: ride.pricePerSeat,
-      },
-    });
+    try {
+      const dist = await getDistanceInKm(pickupLocation, dropoffLocation);
+      const fare = (dist * ride.payPerKm).toFixed(2);
+
+      navigate("/payment", {
+        state: {
+          rideId: ride._id,
+          userId: user.id,
+          pickupLocation,
+          dropoffLocation,
+          payPerKm: ride.payPerKm,
+          fare,
+          distance: dist.toFixed(2),
+        },
+      });
+    } catch (err) {
+      toast.error("Could not calculate distance.");
+    }
   };
 
-  if (loading)
-    return <div className="ride-loading">Loading ride details...</div>;
+  if (loading) return <div className="ride-loading">Loading ride details...</div>;
   if (error) return <div className="ride-error">Error: {error}</div>;
   if (!ride) return <div className="ride-error">Ride not found</div>;
 
   const isPassenger = ride.passengers.some(
     (passenger) => passenger.user?._id === user?.id
   );
-
   const isRideInPast = isBefore(parseISO(ride.departureTime), new Date());
 
   return (
@@ -78,9 +83,7 @@ const RideDetails = () => {
       <div className="ride-card">
         <div className="ride-header">
           <div>
-            <h1>
-              {ride.startLocation} → {ride.endLocation}
-            </h1>
+            <h1>{ride.startLocation} → {ride.endLocation}</h1>
             <p>{format(parseISO(ride.departureTime), "PPPPp")}</p>
           </div>
           <span className="seats-badge">
@@ -115,7 +118,7 @@ const RideDetails = () => {
             <div className="ride-info">
               <p><strong>Departure:</strong> {ride.startLocation}</p>
               <p><strong>Destination:</strong> {ride.endLocation}</p>
-              <p><strong>Price per seat:</strong> ${ride.pricePerSeat}</p>
+              <p><strong>Price per Kilometer:</strong> ₹{ride.payPerKm}</p>
               <p><strong>Status:</strong> {ride.status}</p>
             </div>
           </div>
@@ -162,9 +165,9 @@ const RideDetails = () => {
                   />
                 </label>
               </div>
+
               <button
                 onClick={handleBookRide}
-                disabled={!pickupLocation.trim() || !dropoffLocation.trim()}
                 className="book-btn"
               >
                 Book This Ride

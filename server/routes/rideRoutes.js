@@ -19,7 +19,8 @@ router.get('/:id', getRide);
 router.post('/', createRide);
 router.put('/:id', updateRide);
 router.delete('/:id', deleteRide);
-router.post('/:id/book', bookRide);
+router.post('/:rideId/book/:userId', bookRide);
+
 router.put('/:id/complete', completeRide);
 
 module.exports = router;
