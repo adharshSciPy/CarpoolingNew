@@ -12,10 +12,11 @@ const CreateRideSchema = Yup.object().shape({
   availableSeats: Yup.number()
     .min(1, 'At least 1 seat required')
     .required('Number of seats is required'),
-  pricePerSeat: Yup.number()
-    .min(0, 'Price cannot be negative')
-    .required('Price per seat is required'),
+  payPerKm: Yup.number()
+    .min(0, 'Pay per km cannot be negative')
+    .required('Pay per km is required'),
 });
+
 
 const CreateRide = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const CreateRide = () => {
               endLocation: '',
               departureTime: '',
               availableSeats: 1,
-              pricePerSeat: 0,
+              payPerKm: 0,
             }}
             validationSchema={CreateRideSchema}
             onSubmit={handleSubmit}
@@ -107,16 +108,17 @@ const CreateRide = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="pricePerSeat">Price per Seat</label>
-                  <Field
-                    name="pricePerSeat"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    className="w-full p-2 border rounded"
-                  />
-                  <ErrorMessage name="pricePerSeat" component="div" className="text-red-600 text-sm" />
-                </div>
+  <label htmlFor="payPerKm">Pay per Kilometer</label>
+  <Field
+    name="payPerKm"
+    type="number"
+    min="0"
+    step="0.01"
+    className="w-full p-2 border rounded"
+  />
+  <ErrorMessage name="payPerKm" component="div" className="text-red-600 text-sm" />
+</div>
+
 
                 <div className="flex justify-end gap-4">
                   <button
