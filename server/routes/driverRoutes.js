@@ -5,7 +5,8 @@ const {
   updateDriver,
   approveDriver,
   toggleDriverApproval,
-} = require('../controllers/driverController');
+  getDriverByUserId,
+} = require('../controllers/driverController.js');
 // const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -18,6 +19,8 @@ router.put('/:id', updateDriver);
 // router.put('/:id/approve', authorize('admin'), approveDriver);
 router.put('/:id/approve', approveDriver);
 router.put('/:driverId/approval', toggleDriverApproval);
+router.get('/by-user/:userId', getDriverByUserId);
+
 
 
 module.exports = router;

@@ -4,5 +4,6 @@ const chatController = require("../controllers/chatController.js");
 
 router.post("/send-chat", chatController.sendMessage);
 router.get("/get-chat", chatController.getChat);
+router.get("/driver/:driverId", chatController.getChatsForDriver);
 
 module.exports = router;

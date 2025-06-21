@@ -110,3 +110,17 @@ exports.toggleDriverApproval = async (req, res) => {
     });
   }
 };
+exports.getDriverByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const driver = await Driver.findOne({ user: userId });
+    if (!driver) {
+      return res.status(404).json({ success: false, message: 'Driver not found' });
+    }
+    res.status(200).json({ success: true, data: driver });
+  } catch (error) {
+    console.error("Error getting driver by user:", error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
