@@ -18,6 +18,7 @@ import Payment from "./pages/payment/Payment";
 import ManageDrivers from "./pages/admin/ManageDrivers";
 import DriverDetails from "./pages/driverDetails/DriverDetails";
 import AdminWallet from "./pages/admin/AdminWallet";
+import ChatApp from "./components/chat/ChatApp";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="rides/:id" element={<RideDetails />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/my-rides" element={<MyRides />} />
+          <Route path="/chat" element={<ChatApp />} />
 
           {/* Driver Routes (Protected) */}
           <Route
