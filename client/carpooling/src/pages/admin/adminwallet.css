@@ -1,0 +1,44 @@
+.admin-wallet-container {
+  background-color: #f3f3f3;
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.admin-wallet-card {
+  background-color: #fff;
+  width: 90%;
+  max-width: 800px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-wallet-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.wallet-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.wallet-table th,
+.wallet-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.wallet-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.wallet-table tr:hover {
+  background-color: #f9f9f9;
+}
