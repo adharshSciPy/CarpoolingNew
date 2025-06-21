@@ -327,7 +327,7 @@
   font-weight: 600;
 }
 
-.whatsapp-btn {
+/* .whatsapp-btn {
   margin-top: 1rem;
 }
 
@@ -350,4 +350,32 @@
 
 .whatsapp-btn i {
   font-size: 1.2rem;
+} */
+.chat-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.whatsapp-btn,
+.passenger-chat-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #25D366;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.passenger-chat-btn {
+  background-color: #007bff; /* Blue for passengers */
+}
+
+.whatsapp-btn:hover,
+.passenger-chat-btn:hover {
+  background-color: #1c9c4f;
+  color: #fff;
 }
