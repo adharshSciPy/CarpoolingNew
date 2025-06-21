@@ -58,6 +58,7 @@ const DriverDashboard = () => {
           <Link to="/driver/create-ride" className="btn-primary">Create New Ride</Link>
           <Link to="/profile" className="btn-outline">Update Profile</Link>
           <Link to="/my-rides" className="btn-outline">See My Rides</Link>
+          <Link to="/chatlist" className="btn-outline">Chats</Link>
         </div>
       </div>
     </div>

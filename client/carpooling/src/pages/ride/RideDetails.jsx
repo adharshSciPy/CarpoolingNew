@@ -68,6 +68,7 @@ const RideDetails = () => {
       toast.error("Could not calculate distance.");
     }
   };
+  
 
   if (loading) return <div className="ride-loading">Loading ride details...</div>;
   if (error) return <div className="ride-error">Error: {error}</div>;
@@ -77,6 +78,26 @@ const RideDetails = () => {
     (passenger) => passenger.user?._id === user?.id
   );
   const isRideInPast = isBefore(parseISO(ride.departureTime), new Date());
+
+const handleChatClick = () => {
+  if (!user || !ride?.driver?._id) return;
+
+  const senderRole = isDriver ? "driver" : "user";
+  const senderId = user.id;
+  const driverId = ride.driver._id;
+  const userId = !isDriver ? user.id : ride.passengers.find(p => p.user?._id)?.user._id;
+
+  navigate(`/chat`, {
+    state: {
+      rideId: ride._id,
+      userId,
+      driverId,
+      senderRole,
+      senderId,
+    },
+  });
+};
+
 
   return (
     <div className="ride-container">
@@ -100,17 +121,26 @@ const RideDetails = () => {
               <p><strong>Car Model:</strong> {ride.driver?.carModel}</p>
               <p><strong>Car Color:</strong> {ride.driver?.carColor}</p>
             </div>
-            {!isDriver && ride.driver?.user?.phone && (
-              <div className="whatsapp-btn">
-                <a
-                  href={`https://wa.me/91${ride.driver.user.phone}?text=Hello%2C%20I%20have%20a%20question%20about%20the%20ride%20from%20${ride.startLocation}%20to%20${ride.endLocation}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="fa-brands fa-whatsapp"></i> Chat with Driver
-                </a>
-              </div>
-            )}
+           {!isDriver && ride.driver?.user?.phone && (
+  <div className="chat-buttons">
+    {/* Chat with Driver */}
+    <a
+      href={`https://wa.me/91${ride.driver.user.phone}?text=Hello%2C%20I%20have%20a%20question%20about%20the%20ride%20from%20${ride.startLocation}%20to%20${ride.endLocation}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="whatsapp-btn"
+    >
+      <i className="fa-brands fa-whatsapp"></i> Chat On WhatsApp
+    </a>
+
+    {/* Chat with Passengers (assuming you want a general group link or redirect to another UI route) */}
+   <button onClick={handleChatClick} className="passenger-chat-btn">
+  <i className="fa-solid fa-comments"></i> Talk
+</button>
+
+  </div>
+)}
+
           </div>
 
           <div>
