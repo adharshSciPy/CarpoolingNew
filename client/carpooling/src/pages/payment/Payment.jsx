@@ -7,8 +7,10 @@ import api from "../../services/api";
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  console.log("Payment props:", location.state);
 
-  const { rideId, pickupLocation, dropoffLocation, pricePerSeat } = location.state || {};
+
+  const { rideId, pickupLocation, dropoffLocation, fare,userId } = location.state || {};
 
   const [paymentDetails, setPaymentDetails] = useState({
     name: "",
@@ -27,7 +29,7 @@ const Payment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!rideId || !pickupLocation || !dropoffLocation || !pricePerSeat) {
+    if (!rideId || !pickupLocation || !dropoffLocation || !fare) {
       toast.error("Booking information is missing.");
       return;
     }
@@ -35,29 +37,25 @@ const Payment = () => {
     setLoading(true);
 
     try {
-      // Fake payment validation logic here
-      // You can add more validation if needed
-
-      // Simulate payment processed
       toast.info("Processing payment...");
 
       // Booking API call
-      const { data } = await api.post(`/rides/${rideId}/book`, {
-        pickupLocation,
-        dropoffLocation,
-      });
+      const { data } = await api.post(`/rides/${rideId}/book/${userId}`, {
+  pickupLocation,
+  dropoffLocation,
+  fare,
+});
 
       toast.success("Payment & Booking successful!");
       setBookingData({
         pickupLocation,
         dropoffLocation,
-        pricePerSeat,
+        fare,
         status: data?.status || "Confirmed",
       });
 
-      // Optionally redirect after some time
       setTimeout(() => {
-        navigate("/my-rides"); // or any post-booking route
+        navigate("/my-rides");
       }, 5000);
     } catch (error) {
       toast.error(error.response?.data?.message || "Booking failed.");
@@ -122,7 +120,7 @@ const Payment = () => {
           </div>
 
           <button type="submit" className="btn-pay" disabled={loading}>
-            {loading ? "Processing..." : `Pay ₹${pricePerSeat}`}
+            {loading ? "Processing..." : `Pay ₹${fare}`}
           </button>
         </form>
       ) : (
@@ -135,7 +133,7 @@ const Payment = () => {
             <strong>To:</strong> {bookingData.dropoffLocation}
           </p>
           <p>
-            <strong>Amount Paid:</strong> ${bookingData.pricePerSeat}
+            <strong>Amount Paid:</strong> ₹{bookingData.fare}
           </p>
           <p>
             <strong>Status:</strong> {bookingData.status}

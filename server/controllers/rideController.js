@@ -191,12 +191,13 @@ exports.deleteRide = async (req, res, next) => {
 
 exports.bookRide = async (req, res, next) => {
   try {
-    const ride = await Ride.findById(req.params.id);
+    const { rideId, userId } = req.params;
+    const ride = await Ride.findById(rideId);
 
     if (!ride) {
       return res.status(404).json({
         success: false,
-        message: `No ride found with id ${req.params.id}`,
+        message: `No ride found with id ${rideId}`,
       });
     }
 
@@ -207,18 +208,15 @@ exports.bookRide = async (req, res, next) => {
       });
     }
 
-    // Add passenger to ride
     ride.passengers.push({
-      user: req.user.id,
+      user: userId, // ✅ now using the correct ID
       pickupLocation: req.body.pickupLocation,
       dropoffLocation: req.body.dropoffLocation,
-      fare: ride.pricePerSeat,
-      status: "pending",
+      fare: req.body.fare,
+      status: "completed",
     });
-    console.log(req.body.dropoffLocation);
-    // Decrease available seats
-    ride.availableSeats -= 1;
 
+    ride.availableSeats -= 1;
     await ride.save();
 
     res.status(200).json({
@@ -226,9 +224,12 @@ exports.bookRide = async (req, res, next) => {
       data: ride,
     });
   } catch (err) {
-    next(err);
+    console.error("Book Ride Error:", err);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
 
 exports.completeRide = async (req, res, next) => {
   try {
