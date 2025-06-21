@@ -17,6 +17,7 @@ import Payment from "./pages/payment/Payment";
 
 import ManageDrivers from "./pages/admin/ManageDrivers";
 import DriverDetails from "./pages/driverDetails/DriverDetails";
+import AdminWallet from "./pages/admin/AdminWallet";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
 
         <Route path="/admin" element={<ManageDrivers />} />
         <Route path="/admin-driver/:id" element={<DriverDetails />} />
+        <Route path="/adminwallet" element={<AdminWallet />} />
 
 
         {/* Protected Routes */}
