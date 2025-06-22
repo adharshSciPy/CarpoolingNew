@@ -20,26 +20,30 @@ exports.getRides = async (req, res, next) => {
     // Create query string
     let queryStr = JSON.stringify(reqQuery);
 
-    // Create operators ($gt, $gte, etc)
+    // Add MongoDB operators like $gt, $gte, etc.
     queryStr = queryStr.replace(
       /\b(gt|gte|lt|lte|in)\b/g,
       (match) => `$${match}`
     );
 
+    // ✅ Add filter for future departureTime
+    const parsedQuery = JSON.parse(queryStr);
+    parsedQuery.departureTime = { $gte: new Date() };
+    queryStr = JSON.stringify(parsedQuery);
+
     // Finding resource
     query = Ride.find(JSON.parse(queryStr))
-  .populate({
-    path: "driver",
-    populate: {
-      path: "user",
-      select: "name email phone",
-    },
-  })
-  .populate({
-    path: "passengers.user",
-    select: "name phone", // add more if needed
-  });
-
+      .populate({
+        path: "driver",
+        populate: {
+          path: "user",
+          select: "name email phone",
+        },
+      })
+      .populate({
+        path: "passengers.user",
+        select: "name phone",
+      });
 
     // Select Fields
     if (req.query.select) {
@@ -60,7 +64,9 @@ exports.getRides = async (req, res, next) => {
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const total = await Ride.countDocuments();
+    const total = await Ride.countDocuments({
+      departureTime: { $gte: new Date() }  // ✅ Count only active rides
+    });
 
     query = query.skip(startIndex).limit(limit);
 
@@ -94,6 +100,7 @@ exports.getRides = async (req, res, next) => {
     next(err);
   }
 };
+
 
 exports.getRide = async (req, res, next) => {
   try {
