@@ -16,27 +16,32 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (values) => {
-    setIsLoading(true);
-    try {
-      const user = await login(values); 
-      toast.success("Logged in successfully");
-      console.log(user)
-      const role =localStorage.getItem("role")
-      
-      if (role === "driver") {
-        navigate("/driver");
-      } else if (role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
-    } finally {
-      setIsLoading(false);
+ const handleSubmit = async (values) => {
+  setIsLoading(true);
+  try {
+    const user = await login(values);
+    toast.success("Logged in successfully");
+
+    const role = localStorage.getItem("role");
+
+    if (role === "driver") {
+      navigate("/driver");
+    } else if (role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/");
     }
-  };
+  } catch (error) {
+    const errorMsg =
+      error.response?.data?.message ||
+      error.message ||
+      "Login failed. Please try again.";
+    toast.error(errorMsg);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="container">

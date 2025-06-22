@@ -59,35 +59,35 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    // Validate email & password
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide an email and password",
+        message: "Please provide email and password",
       });
     }
 
-    // Check for user
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "Invalid credentials", // Consistent error message
       });
     }
 
-    // Check if password matches
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message: "Invalid credentials", // Same message as above
       });
     }
 
     sendTokenResponse(user, 200, res);
   } catch (err) {
-    next(err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
