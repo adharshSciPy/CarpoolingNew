@@ -1,41 +1,52 @@
 import React from "react";
 import "./ContactUs.css";
 
-const ContactUs = () => {
+const Contact = () => {
   return (
     <div className="contact-container">
       <div className="contact-box">
         <h2 className="contact-heading">Contact Us</h2>
         <p className="contact-description">
-          We'd love to hear from you. Fill out the form or reach us through the details below.
+          We'd love to hear from you. Please fill out the form below.
         </p>
 
-        {/* Name & Username Row */}
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="name">Name</label>
-            <input type="text" id="name" placeholder="Enter your name" />
+        <form>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input type="text" id="name" placeholder="Your Name" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" placeholder="Your Email" />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="username">E-mail</label>
-            <input type="text" id="username" placeholder="Enter your mail ID" />
-          </div>
-        </div>
 
-        {/* Contact Info */}
+          <div className="form-group">
+            <label htmlFor="message">Message</label>
+            <input type="text" id="message" placeholder="Write your message..." />
+          </div>
+
+          <button type="submit" className="submit-button">
+            Send Message
+          </button>
+        </form>
+
         <div className="contact-info-section">
           <div className="info-card">
-            <div className="icon">📞</div>
+            <span className="icon">📞</span>
             <div>
-              <h4>Landline</h4>
-              <p>+91 67278567367</p>
+              <strong>Landline</strong>
+              <br />
+              +91 12345 67890
             </div>
           </div>
           <div className="info-card">
-            <div className="icon">🏢</div>
+            <span className="icon">🏢</span>
             <div>
-              <h4>Office</h4>
-              <p>123, Anna Salai, Chennai, India</p>
+              <strong>Office</strong>
+              <br />
+              123 Main Street, City, India
             </div>
           </div>
         </div>
@@ -44,4 +55,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default Contact;
