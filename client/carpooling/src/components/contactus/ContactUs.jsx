@@ -28,7 +28,7 @@ const ContactUs = () => {
             <div className="icon">📞</div>
             <div>
               <h4>Landline</h4>
-              <p>+91 44 1234 5678</p>
+              <p>+91 67278567367</p>
             </div>
           </div>
           <div className="info-card">
