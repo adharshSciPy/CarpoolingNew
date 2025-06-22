@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'react-toastify';
 import { FaStar } from 'react-icons/fa';
-import "./style.css";
+import './style.css';
 
 const MyRides = () => {
   const { user } = useAuth();
@@ -15,12 +15,13 @@ const MyRides = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const [showReviewForm, setShowReviewForm] = useState(null);
   const [rating, setRating] = useState(0);
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState('');
 
+  // Fetch rides
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const { data } = await api.get('http://localhost:5000/api/v1/rides');
+        const { data } = await api.get('/rides'); // adjust base URL if needed
         setRides(data.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Error fetching rides');
@@ -32,6 +33,15 @@ const MyRides = () => {
     fetchRides();
   }, [user]);
 
+  // ⏰ Auto-refresh UI every 30 seconds to check ride time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRides((prev) => [...prev]); // trigger re-render
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Filter rides by time and active tab
   const filteredRides = rides.filter((ride) => {
     const departure = new Date(ride.departureTime);
     const now = new Date();
@@ -45,12 +55,12 @@ const MyRides = () => {
         rating,
         feedback,
       });
-      toast.success("Review submitted!");
+      toast.success('Review submitted!');
       setShowReviewForm(null);
       setRating(0);
-      setFeedback("");
+      setFeedback('');
     } catch (err) {
-      toast.error("Failed to submit review");
+      toast.error('Failed to submit review');
     }
   };
 
@@ -77,7 +87,7 @@ const MyRides = () => {
       {filteredRides.length === 0 ? (
         <div className="empty-state">
           <p>
-            You have no {activeTab} rides.{" "}
+            You have no {activeTab} rides.{' '}
             {user?.role === 'driver' && activeTab === 'upcoming' && (
               <Link to="/driver/create-ride" className="create-link">
                 Create a new ride
@@ -91,7 +101,9 @@ const MyRides = () => {
             <div key={ride._id} className="ride-card">
               <div className="ride-header">
                 <div>
-                  <h2>{ride.startLocation} → {ride.endLocation}</h2>
+                  <h2>
+                    {ride.startLocation} → {ride.endLocation}
+                  </h2>
                   <p>{format(parseISO(ride.departureTime), 'PPPPp')}</p>
                 </div>
                 <span className={`status status-${ride.status}`}>
@@ -108,13 +120,15 @@ const MyRides = () => {
                   <p className="label">Fare</p>
                   <p>
                     ₹
-                    {ride.passengers.find(p => p.user?._id === user?.id)?.fare?.toFixed(2) ||
-                      (ride.payPerKm ? `${ride.payPerKm} per km` : "N/A")}
+                    {ride.passengers.find((p) => p.user?._id === user?.id)?.fare?.toFixed(2) ||
+                      (ride.payPerKm ? `${ride.payPerKm} per km` : 'N/A')}
                   </p>
                 </div>
                 <div>
                   <p className="label">Seats</p>
-                  <p>{ride.availableSeats} / {ride.passengers.length}</p>
+                  <p>
+                    {ride.availableSeats} / {ride.passengers.length}
+                  </p>
                 </div>
               </div>
 
@@ -124,7 +138,8 @@ const MyRides = () => {
                 </Link>
               </div>
 
-              {activeTab === "past" && user?.role !== "driver" && (
+              {/* Review Section (Only for past rides and passengers) */}
+              {activeTab === 'past' && user?.role !== 'driver' && (
                 <>
                   <button
                     onClick={() => setShowReviewForm(ride._id)}
@@ -142,9 +157,9 @@ const MyRides = () => {
                             <FaStar
                               key={star}
                               size={24}
-                              color={star <= rating ? "#ffc107" : "#e4e5e9"}
+                              color={star <= rating ? '#ffc107' : '#e4e5e9'}
                               onClick={() => setRating(star)}
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: 'pointer' }}
                             />
                           ))}
                         </div>
