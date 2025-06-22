@@ -98,10 +98,16 @@ const MyRides = () => {
                   <p className="label">Role</p>
                   <p>{ride.driver?.user?._id === user?.id ? 'Driver' : 'Passenger'}</p>
                 </div>
-                <div>
-                  <p className="label">Price</p>
-                  <p>${ride.pricePerSeat}</p>
-                </div>
+<div>
+  <p className="label">Fare</p>
+  <p>
+    ₹
+    {ride.passengers.find(p => p.user?._id === user?.id)?.fare?.toFixed(2) ||
+      (ride.payPerKm ? `${ride.payPerKm} per km` : "N/A")}
+  </p>
+</div>
+
+
                 <div>
                   <p className="label">Seats</p>
                   <p>{ride.availableSeats} / {ride.passengers.length}</p>
