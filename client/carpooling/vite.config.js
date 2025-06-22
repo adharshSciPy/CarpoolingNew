@@ -11,5 +11,8 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
+    hmr: {
+      overlay: false, // ✅ disables full-page error overlay (which can cause reloads)
+    },
   },
 });

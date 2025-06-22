@@ -20,26 +20,28 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  const login = async (credentials) => {
-    try {
-      
-      const { data } = await api.post("/auth/login", credentials);
-      console.log(data,"login data")
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      localStorage.setItem("id", data.id);
-      setToken(data.token);
+const login = async (credentials) => {
+  try {
+    const { data } = await api.post("/auth/login", credentials);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
+    localStorage.setItem("id", data.id);
+    setToken(data.token);
 
-      const decoded = jwtDecode(data.token);
-      setUser(decoded);
+    const decoded = jwtDecode(data.token);
+    setUser(decoded);
 
-      api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+    api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+    return decoded;
+  } catch (error) {
+    // ✅ Let the error be clean — don't allow Vite to see stack traces with src paths
+    throw new Error(
+      error?.response?.data?.message || "Invalid credentials"
+    );
+  }
+};
 
-      return decoded; 
-    } catch (error) {
-      throw error;
-    }
-  };
+
 
   const register = async (userData) => {
     try {

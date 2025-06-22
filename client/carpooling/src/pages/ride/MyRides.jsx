@@ -124,12 +124,13 @@ const MyRides = () => {
                       (ride.payPerKm ? `${ride.payPerKm} per km` : 'N/A')}
                   </p>
                 </div>
-                <div>
-                  <p className="label">Seats</p>
-                  <p>
-                    {ride.availableSeats} / {ride.passengers.length}
-                  </p>
-                </div>
+               <div>
+  <p className="label">Seats</p>
+  <p>
+    Booked: {ride.passengers.length} / Available: {ride.availableSeats}
+  </p>
+</div>
+
               </div>
 
               <div className="ride-footer">
