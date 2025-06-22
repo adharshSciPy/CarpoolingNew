@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import "./style.css";
 
+// Yup validation schema
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
   password: Yup.string().required("Required"),
@@ -16,44 +17,56 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
- const handleSubmit = async (values) => {
-  setIsLoading(true);
-  try {
-    const user = await login(values);
-    toast.success("Logged in successfully");
+  // Debug to check if reload is happening
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      console.log("Page is reloading...");
+    });
+  }, []);
 
-    const role = localStorage.getItem("role");
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setIsLoading(true);
 
-    if (role === "driver") {
-      navigate("/driver");
-    } else if (role === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/");
+    try {
+      await login(values);
+
+      toast.success("Logged in successfully", {
+        autoClose: 2000,
+        onClose: () => {
+          const role = localStorage.getItem("role");
+          if (role === "driver") navigate("/driver");
+          else if (role === "admin") navigate("/admin");
+          else navigate("/");
+        },
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Login failed. Please try again.";
+
+      toast.error(errorMsg, {
+        autoClose: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
     }
-  } catch (error) {
-    const errorMsg =
-      error.response?.data?.message ||
-      error.message ||
-      "Login failed. Please try again.";
-    toast.error(errorMsg);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="container">
       <div className="form-box">
         <h2 className="form-title">Sign in to your account</h2>
+
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
           onSubmit={handleSubmit}
         >
-          {() => (
-            <Form>
+          {({ isSubmitting }) => (
+            <Form noValidate>
               <Field
                 name="email"
                 placeholder="Email address"
@@ -83,7 +96,11 @@ export default function Login() {
                 <label htmlFor="remember">Remember me</label>
               </div>
 
-              <button type="submit" disabled={isLoading} className="button">
+              <button
+                type="submit"
+                disabled={isLoading || isSubmitting}
+                className="button"
+              >
                 {isLoading ? "Signing in..." : "Sign in"}
               </button>
             </Form>
