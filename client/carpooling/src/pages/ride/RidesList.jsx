@@ -16,7 +16,8 @@ const RidesList = () => {
 
   const fetchRides = async () => {
     try {
-      const { data } = await api.get('/rides');
+     const { data } = await api.get('/rides?onlyUpcoming=true');
+
       setRides(data.data);
       setFilteredRides(data.data);
     } catch (err) {
@@ -91,17 +92,19 @@ const RidesList = () => {
       {filteredRides.length > 0 ? (
         filteredRides.map((ride) => (
           <RideCard
-            key={ride._id}
-            id={ride._id}
-            from={ride.startLocation}
-            to={ride.endLocation}
-            date={format(parseISO(ride.departureTime), 'PPP')}
-            time={format(parseISO(ride.departureTime), 'p')}
-            seats={ride.availableSeats}
-            price={ride.pricePerSeat}
-            driverName={ride.driver?.user?.name}
-            carModel={ride.driver?.carModel}
-          />
+  key={ride._id}
+  id={ride._id}
+  from={ride.startLocation}
+  to={ride.endLocation}
+  date={format(parseISO(ride.departureTime), 'PPP')}
+  time={format(parseISO(ride.departureTime), 'p')}
+  seats={ride.availableSeats}
+  price={ride.pricePerSeat}
+  driverName={ride.driver?.user?.name}
+  carModel={ride.driver?.carModel}
+  rating={ride.averageRating}
+/>
+
         ))
       ) : (
         <div className="no-rides-msg">

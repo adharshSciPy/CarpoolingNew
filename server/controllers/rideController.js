@@ -8,50 +8,44 @@ exports.getRides = async (req, res, next) => {
   try {
     let query;
 
-    // Copy req.query
     const reqQuery = { ...req.query };
-
-    // Fields to exclude
-    const removeFields = ["select", "sort", "page", "limit"];
-
-    // Loop over removeFields and delete them from reqQuery
+    const removeFields = ["select", "sort", "page", "limit", "onlyUpcoming"];
     removeFields.forEach((param) => delete reqQuery[param]);
 
-    // Create query string
     let queryStr = JSON.stringify(reqQuery);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`);
 
-    // Add MongoDB operators like $gt, $gte, etc.
-    queryStr = queryStr.replace(
-      /\b(gt|gte|lt|lte|in)\b/g,
-      (match) => `$${match}`
-    );
-
-    // ✅ Add filter for future departureTime
     const parsedQuery = JSON.parse(queryStr);
-    parsedQuery.departureTime = { $gte: new Date() };
-    queryStr = JSON.stringify(parsedQuery);
 
-    // Finding resource
-    query = Ride.find(JSON.parse(queryStr))
+    // ✅ Filter for upcoming rides only
+    if (req.query.onlyUpcoming === 'true') {
+      parsedQuery.departureTime = { $gte: new Date() };
+    }
+
+    query = Ride.find(parsedQuery)
       .populate({
         path: "driver",
-        populate: {
-          path: "user",
-          select: "name email phone",
-        },
+        populate: [
+          {
+            path: "user",
+            select: "name email phone",
+          },
+          {
+            path: "reviews.user",
+            select: "name",
+          },
+        ],
       })
       .populate({
         path: "passengers.user",
         select: "name phone",
       });
 
-    // Select Fields
     if (req.query.select) {
       const fields = req.query.select.split(",").join(" ");
       query = query.select(fields);
     }
 
-    // Sort
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -59,47 +53,55 @@ exports.getRides = async (req, res, next) => {
       query = query.sort("-createdAt");
     }
 
-    // Pagination
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const total = await Ride.countDocuments({
-      departureTime: { $gte: new Date() }  // ✅ Count only active rides
-    });
+
+    const total = await Ride.countDocuments(
+      req.query.onlyUpcoming === 'true' ? { departureTime: { $gte: new Date() } } : {}
+    );
 
     query = query.skip(startIndex).limit(limit);
 
-    // Executing query
     const rides = await query;
 
-    // Pagination result
+    // ✅ Add average rating for each ride's driver
+    const ridesWithRatings = rides.map((ride) => {
+      const driver = ride.driver;
+      let averageRating = 0;
+
+      if (driver && Array.isArray(driver.reviews) && driver.reviews.length > 0) {
+        const total = driver.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+        averageRating = parseFloat((total / driver.reviews.length).toFixed(1));
+      }
+
+      // Add averageRating field to ride
+      return {
+        ...ride.toObject(),
+        averageRating,
+      };
+    });
+
     const pagination = {};
-
     if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit,
-      };
+      pagination.next = { page: page + 1, limit };
     }
-
     if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit,
-      };
+      pagination.prev = { page: page - 1, limit };
     }
 
     res.status(200).json({
       success: true,
-      count: rides.length,
+      count: ridesWithRatings.length,
       pagination,
-      data: rides,
+      data: ridesWithRatings,
     });
   } catch (err) {
     next(err);
   }
 };
+
 
 
 exports.getRide = async (req, res, next) => {
@@ -215,7 +217,7 @@ exports.deleteRide = async (req, res, next) => {
 exports.bookRide = async (req, res, next) => {
   try {
     const { rideId, userId } = req.params;
-    const { pickupLocation, dropoffLocation, fare } = req.body;
+    const { pickupLocation, dropoffLocation, fare, seatCount } = req.body;
 
     const ride = await Ride.findById(rideId);
     if (!ride) {
@@ -225,10 +227,18 @@ exports.bookRide = async (req, res, next) => {
       });
     }
 
-    if (ride.availableSeats < 1) {
+    const seatsToBook = parseInt(seatCount, 10);
+    if (isNaN(seatsToBook) || seatsToBook < 1) {
       return res.status(400).json({
         success: false,
-        message: "No available seats",
+        message: "Invalid seat count",
+      });
+    }
+
+    if (ride.availableSeats < seatsToBook) {
+      return res.status(400).json({
+        success: false,
+        message: `Only ${ride.availableSeats} seat(s) available`,
       });
     }
 
@@ -240,18 +250,21 @@ exports.bookRide = async (req, res, next) => {
       });
     }
 
-    const adminCommission = +(numericFare * 0.002).toFixed(2); // 0.2%
-    const userFare = +(numericFare - adminCommission).toFixed(2);
+    const totalFare = +(numericFare * seatsToBook).toFixed(2);
+    const adminCommission = +(totalFare * 0.002).toFixed(2); // 0.2%
+    const userFare = +(totalFare - adminCommission).toFixed(2);
 
+    // Add a single passenger object with seat count
     ride.passengers.push({
       user: userId,
       pickupLocation,
       dropoffLocation,
-      fare: numericFare,
+      fare: totalFare,
+      seatCount: seatsToBook,
       status: "completed",
     });
 
-    ride.availableSeats -= 1;
+    ride.availableSeats -= seatsToBook;
     await ride.save();
 
     const adminShare = new AdminWallet({
@@ -263,7 +276,7 @@ exports.bookRide = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Ride booked successfully",
+      message: `${seatsToBook} seat(s) booked successfully`,
       data: ride,
     });
   } catch (err) {
@@ -271,6 +284,7 @@ exports.bookRide = async (req, res, next) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
 
 
 
