@@ -1,13 +1,9 @@
 .layout {
   min-height: 100vh;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
-    url('../../assets/Screenshot\ 2025-06-16\ 230122.png'); /* ✅ Replace with your image path */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: #f3f4f6;
+  font-family: 'Segoe UI', sans-serif;
 }
+
 /* Navbar */
 .navbar {
   background-color: white;
@@ -131,13 +127,14 @@
   border: none;
   cursor: pointer;
   gap: 2rem;
+  margin-right: 30px;
 }
 .auth-link1{
-  margin-right: 10px;
+  margin-right: 30px;
   color: #000000;
 }
 .auth-link2{
- margin-right: 10px;
+ margin-right: 30px;
   color: #01040a;
 }
 .auth-link1:hover {
