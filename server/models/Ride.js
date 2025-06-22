@@ -6,20 +6,26 @@
       ref: 'Driver',
       required: true,
     },
-    passengers: [{
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-      pickupLocation: String,
-      dropoffLocation: String,
-      fare: Number,
-      status: {
-        type: String,
-        enum: ['pending', 'confirmed', 'completed', 'cancelled'],
-        default: 'pending',
-      },
-    }],
+ passengers: [{
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  pickupLocation: String,
+  dropoffLocation: String,
+  fare: Number, // Total fare for all seats booked by this user
+  seatCount: {
+    type: Number,
+    default: 1,
+    min: 1,
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
+    default: 'pending',
+  },
+}],
+
     startLocation: {
       type: String,
       required: true,

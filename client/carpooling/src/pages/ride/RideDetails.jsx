@@ -14,6 +14,7 @@ import L from "leaflet";
 import "./style.css";
 import { isPointNearPolyline } from "../../geolibUtil.js";
 import axios from "axios";
+
 const RideDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -24,6 +25,7 @@ const RideDetails = () => {
   const [error, setError] = useState(null);
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
+  const [seatCount, setSeatCount] = useState(1); // New state
   const [decodedPath, setDecodedPath] = useState([]);
 
   const isDriver = localStorage.getItem("role") === "driver";
@@ -62,67 +64,73 @@ const RideDetails = () => {
     fetchRide();
   }, [id]);
 
- const handleBookRide = async () => {
-  if (!user) return navigate("/login");
+  const handleBookRide = async () => {
+    if (!user) return navigate("/login");
 
-  if (!pickupLocation.trim() || !dropoffLocation.trim()) {
-    toast.error("Please enter both pickup and dropoff locations.");
-    return;
-  }
-
-  const rideDeparture = parseISO(ride.departureTime);
-  if (isBefore(rideDeparture, new Date())) {
-    toast.error("This ride has already departed and cannot be booked.");
-    return;
-  }
-
-  try {
-    const geocodeURL = "https://api.openrouteservice.org/geocode/search";
-    const apiKey = "5b3ce3597851110001cf62484eb817f85d3b4acd9d1a7e1fdf05d60c";
-
-    const fetchCoords = async (loc) => {
-      const res = await axios.get(geocodeURL, {
-        params: {
-          api_key: apiKey,
-          text: loc,
-          size: 1,
-        },
-      });
-      const [lng, lat] = res.data.features[0].geometry.coordinates;
-      return { lat, lng };
-    };
-
-    const pickupCoords = await fetchCoords(pickupLocation);
-    const dropoffCoords = await fetchCoords(dropoffLocation);
-
-    const isPickupValid = isPointNearPolyline(pickupCoords, decodedPath);
-    const isDropoffValid = isPointNearPolyline(dropoffCoords, decodedPath);
-
-    if (!isPickupValid || !isDropoffValid) {
-      toast.error("Pickup or Dropoff location must be along the ride route.");
+    if (!pickupLocation.trim() || !dropoffLocation.trim()) {
+      toast.error("Please enter both pickup and dropoff locations.");
       return;
     }
 
-    const dist = await getDistanceInKm(pickupLocation, dropoffLocation);
-    const fare = (dist * ride.payPerKm).toFixed(2);
+    const rideDeparture = parseISO(ride.departureTime);
+    if (isBefore(rideDeparture, new Date())) {
+      toast.error("This ride has already departed and cannot be booked.");
+      return;
+    }
 
-    navigate("/payment", {
-      state: {
-        rideId: ride._id,
-        userId: user.id,
-        pickupLocation,
-        dropoffLocation,
-        payPerKm: ride.payPerKm,
-        fare,
-        distance: dist.toFixed(2),
-      },
-    });
-  } catch (err) {
-    toast.error("Could not verify location or calculate distance.");
-    console.error(err);
-  }
-};
+    if (seatCount < 1 || seatCount > ride.availableSeats) {
+      toast.error(`Please select a seat count between 1 and ${ride.availableSeats}`);
+      return;
+    }
 
+    try {
+      const geocodeURL = "https://api.openrouteservice.org/geocode/search";
+      const apiKey = "5b3ce3597851110001cf62484eb817f85d3b4acd9d1a7e1fdf05d60c";
+
+      const fetchCoords = async (loc) => {
+        const res = await axios.get(geocodeURL, {
+          params: {
+            api_key: apiKey,
+            text: loc,
+            size: 1,
+          },
+        });
+        const [lng, lat] = res.data.features[0].geometry.coordinates;
+        return { lat, lng };
+      };
+
+      const pickupCoords = await fetchCoords(pickupLocation);
+      const dropoffCoords = await fetchCoords(dropoffLocation);
+
+      const isPickupValid = isPointNearPolyline(pickupCoords, decodedPath);
+      const isDropoffValid = isPointNearPolyline(dropoffCoords, decodedPath);
+
+      if (!isPickupValid || !isDropoffValid) {
+        toast.error("Pickup or Dropoff location must be along the ride route.");
+        return;
+      }
+
+      const dist = await getDistanceInKm(pickupLocation, dropoffLocation);
+      const farePerPerson = (dist * ride.payPerKm).toFixed(2);
+      const totalFare = (farePerPerson * seatCount).toFixed(2);
+
+      navigate("/payment", {
+        state: {
+          rideId: ride._id,
+          userId: user.id,
+          pickupLocation,
+          dropoffLocation,
+          payPerKm: ride.payPerKm,
+          fare: totalFare,
+          distance: dist.toFixed(2),
+          seatCount,
+        },
+      });
+    } catch (err) {
+      toast.error("Could not verify location or calculate distance.");
+      console.error(err);
+    }
+  };
 
   const handleChatClick = () => {
     if (!user || !ride?.driver?._id) return;
@@ -242,6 +250,23 @@ const RideDetails = () => {
                     placeholder="Enter dropoff location"
                   />
                 </label>
+
+              <label>
+  Number of Seats:
+  <select
+    value={seatCount}
+    onChange={(e) => setSeatCount(Number(e.target.value))}
+    required
+  >
+    <option value="">Select seat count</option>
+    {Array.from({ length: ride.availableSeats }, (_, i) => i + 1).map((seat) => (
+      <option key={seat} value={seat}>
+        {seat}
+      </option>
+    ))}
+  </select>
+</label>
+
               </div>
 
               <button onClick={handleBookRide} className="book-btn">
