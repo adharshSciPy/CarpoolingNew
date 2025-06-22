@@ -27,13 +27,19 @@ exports.getRides = async (req, res, next) => {
     );
 
     // Finding resource
-    query = Ride.find(JSON.parse(queryStr)).populate({
-      path: "driver",
-      populate: {
-        path: "user",
-        select: "name email phone",
-      },
-    });
+    query = Ride.find(JSON.parse(queryStr))
+  .populate({
+    path: "driver",
+    populate: {
+      path: "user",
+      select: "name email phone",
+    },
+  })
+  .populate({
+    path: "passengers.user",
+    select: "name phone", // add more if needed
+  });
+
 
     // Select Fields
     if (req.query.select) {

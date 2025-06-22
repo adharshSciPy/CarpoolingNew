@@ -4,7 +4,8 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'react-toastify';
-import "./style.css"
+import { FaStar } from 'react-icons/fa';
+import "./style.css";
 
 const MyRides = () => {
   const { user } = useAuth();
@@ -12,16 +13,14 @@ const MyRides = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [showReviewForm, setShowReviewForm] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        let endpoint = 'http://localhost:5000/api/v1/rides';
-        if (user?.role === 'driver') {
-          endpoint = 'http://localhost:5000/api/v1/rides';
-        }
-
-        const { data } = await api.get(endpoint);
+        const { data } = await api.get('http://localhost:5000/api/v1/rides');
         setRides(data.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Error fetching rides');
@@ -30,23 +29,30 @@ const MyRides = () => {
         setLoading(false);
       }
     };
-
     fetchRides();
   }, [user]);
 
   const filteredRides = rides.filter((ride) => {
     const departure = new Date(ride.departureTime);
     const now = new Date();
-    if (activeTab === 'upcoming') {
-      return departure > now;
-    } else if (activeTab === 'past') {
-      return departure <= now;
-    }
-    return true;
+    return activeTab === 'upcoming' ? departure > now : departure <= now;
   });
 
-  if (loading) return <div className="myrides-container"><p>Loading your rides...</p></div>;
-  if (error) return <div className="myrides-container error"><p>Error: {error}</p></div>;
+  const handleSubmitReview = async (driverId, rideId) => {
+    try {
+      await api.post(`/drivers/${driverId}/review`, {
+        rideId,
+        rating,
+        feedback,
+      });
+      toast.success("Review submitted!");
+      setShowReviewForm(null);
+      setRating(0);
+      setFeedback("");
+    } catch (err) {
+      toast.error("Failed to submit review");
+    }
+  };
 
   return (
     <div className="myrides-container">
@@ -71,7 +77,7 @@ const MyRides = () => {
       {filteredRides.length === 0 ? (
         <div className="empty-state">
           <p>
-            You have no {activeTab} rides.{' '}
+            You have no {activeTab} rides.{" "}
             {user?.role === 'driver' && activeTab === 'upcoming' && (
               <Link to="/driver/create-ride" className="create-link">
                 Create a new ride
@@ -99,8 +105,12 @@ const MyRides = () => {
                   <p>{ride.driver?.user?._id === user?.id ? 'Driver' : 'Passenger'}</p>
                 </div>
                 <div>
-                  <p className="label">Price</p>
-                  <p>${ride.pricePerSeat}</p>
+                  <p className="label">Fare</p>
+                  <p>
+                    ₹
+                    {ride.passengers.find(p => p.user?._id === user?.id)?.fare?.toFixed(2) ||
+                      (ride.payPerKm ? `${ride.payPerKm} per km` : "N/A")}
+                  </p>
                 </div>
                 <div>
                   <p className="label">Seats</p>
@@ -113,6 +123,55 @@ const MyRides = () => {
                   View details →
                 </Link>
               </div>
+
+              {activeTab === "past" && user?.role !== "driver" && (
+                <>
+                  <button
+                    onClick={() => setShowReviewForm(ride._id)}
+                    className="review-btn"
+                  >
+                    Review Driver
+                  </button>
+
+                  {showReviewForm === ride._id && (
+                    <div className="modal-overlay">
+                      <div className="modal">
+                        <h3>Rate the Driver</h3>
+                        <div className="stars">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <FaStar
+                              key={star}
+                              size={24}
+                              color={star <= rating ? "#ffc107" : "#e4e5e9"}
+                              onClick={() => setRating(star)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          ))}
+                        </div>
+                        <textarea
+                          placeholder="Write your feedback"
+                          value={feedback}
+                          onChange={(e) => setFeedback(e.target.value)}
+                        />
+                        <div className="modal-actions">
+                          <button
+                            onClick={() => handleSubmitReview(ride.driver._id, ride._id)}
+                            className="submit-review"
+                          >
+                            Submit Review
+                          </button>
+                          <button
+                            onClick={() => setShowReviewForm(null)}
+                            className="cancel-review"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           ))}
         </div>
