@@ -51,18 +51,24 @@ const ChatApp = () => {
     <div className="chat-container">
       <div className="chat-header">Chat Support</div>
       <div className="chat-messages">
-  {messages.length === 0 ? (
-    <div className="chat-welcome">Welcome to a new chat!</div>
-  ) : (
-    messages.map((msg, idx) => (
-      <div
-        key={idx}
-        className={`chat-message ${msg.senderType === senderRole ? 'self' : 'other'}`}
-      >
-        {msg.text}
+{messages.length === 0 ? (
+  <div className="chat-welcome">Welcome to a new chat!</div>
+) : (
+  messages.map((msg, idx) => (
+    <div
+      key={idx}
+      className={`chat-message-row ${msg.senderType === senderRole ? 'self' : 'other'}`}
+    >
+      <div className="chat-bubble">
+        <div className="chat-text">{msg.text}</div>
+        <div className="chat-time">
+          {new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
       </div>
-    ))
-  )}
+    </div>
+  ))
+)}
+
 </div>
 
       <div className="chat-input">

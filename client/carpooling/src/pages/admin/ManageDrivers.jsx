@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import "./manage.css"
+import './manage.css';
 
 const ManageDrivers = () => {
   const [allDrivers, setAllDrivers] = useState([]);
@@ -11,15 +11,14 @@ const ManageDrivers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filterApproved, setFilterApproved] = useState('all');
-
+  const [walletEntries, setWalletEntries] = useState([]);
   const limit = 10;
 
-  // Fetch all drivers once
   useEffect(() => {
     const fetchDrivers = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/v1/drivers`);
+        const { data } = await axios.get('http://localhost:5000/api/v1/drivers');
         setAllDrivers(data.data || []);
       } catch (error) {
         toast.error('Failed to load drivers');
@@ -28,10 +27,23 @@ const ManageDrivers = () => {
       }
     };
 
+    const fetchWallet = async () => {
+      try {
+        const { data } = await axios.get('http://localhost:5000/api/v1/chat/admin-wallet', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setWalletEntries(data.data || []);
+      } catch (error) {
+        toast.error('Failed to load admin wallet data');
+      }
+    };
+
     fetchDrivers();
+    fetchWallet();
   }, []);
 
-  // Apply frontend filtering
   useEffect(() => {
     let filtered = [...allDrivers];
 
@@ -54,15 +66,13 @@ const ManageDrivers = () => {
     }
 
     setFilteredDrivers(filtered);
-    setCurrentPage(1); // Reset to page 1 after filter
+    setCurrentPage(1);
   }, [searchTerm, filterApproved, allDrivers]);
 
-  // Paginate filtered results
   const paginatedDrivers = filteredDrivers.slice(
     (currentPage - 1) * limit,
     currentPage * limit
   );
-
   const totalPages = Math.ceil(filteredDrivers.length / limit);
 
   const handleApprove = async (driverId) => {
@@ -79,26 +89,14 @@ const ManageDrivers = () => {
     }
   };
 
-  if (loading) return <div className="p-4">Loading drivers...</div>;
-
-  const wallet = [
-    { User: "Userone", Ride: "Rideone", Share: "Shareohne" },
-    { User: "Usertwo", Ride: "Ridetwo", Share: "Shareotwo" },
-    { User: "Userthree", Ride: "Ridethree", Share: "Sharethree" },
-    { User: "Userfour", Ride: "Ridefour", Share: "Sharefour" },
-    { User: "Userfive", Ride: "Ridefive", Share: "Sharefive" }
-  ]
+  if (loading) return <div className="loader">Loading drivers...</div>;
 
   return (
-    <div className="admin">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Manage Drivers</h2>
-        <div className="flex space-x-4">
-          <select
-            className="border border-gray-300 rounded-md px-3 py-2"
-            value={filterApproved}
-            onChange={(e) => setFilterApproved(e.target.value)}
-          >
+    <div className="dashboard">
+      <div className="header">
+        <h2>Manage Drivers</h2>
+        <div className="filters">
+          <select value={filterApproved} onChange={(e) => setFilterApproved(e.target.value)}>
             <option value="all">All Drivers</option>
             <option value="approved">Approved Only</option>
             <option value="pending">Pending Only</option>
@@ -106,116 +104,98 @@ const ManageDrivers = () => {
           <input
             type="text"
             placeholder="Search drivers..."
-            className="border border-gray-300 rounded-md px-3 py-2"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto w-full">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
+      <div className="table-container">
+        <table>
+          <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">License</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">Car Details</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">Actions</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600">Verify</th>
+              <th>Name</th>
+              <th>License</th>
+              <th>Car Details</th>
+              <th>Status</th>
+              <th>Actions</th>
+              <th>Verify</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody>
             {paginatedDrivers.map((driver) => (
               <tr key={driver._id}>
-                <td className="px-6 py-4">
-                  <div className="font-medium">{driver.user?.name}</div>
-                  <div className="text-sm text-gray-500">{driver.user?.email}</div>
+                <td>
+                  <strong>{driver.user?.name}</strong>
+                  <div className="sub">{driver.user?.email}</div>
                 </td>
-                <td className="px-6 py-4 text-sm">{driver.licenseNumber}</td>
-                <td className="px-6 py-4 text-sm">
+                <td>{driver.licenseNumber}</td>
+                <td>
                   {driver.carModel} ({driver.carColor})<br />
-                  <span className="text-gray-500">{driver.plateNumber}</span>
+                  <span className="sub">{driver.plateNumber}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td>
                   {driver.approved ? (
-                    <span className="inline-block px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full">
-                      Approved
-                    </span>
+                    <span className="status approved">Approved</span>
                   ) : (
-                    <span className="inline-block px-2 py-1 text-xs text-yellow-800 bg-yellow-100 rounded-full">
-                      Pending
-                    </span>
+                    <span className="status pending">Pending</span>
                   )}
                 </td>
-                <td className="px-6 py-4">
-                  <Link
-                    to={`/admin-driver/${driver._id}`}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
+                <td>
+                  <Link to={`/admin-driver/${driver._id}`} className="view-link">
                     View
                   </Link>
                 </td>
-                <td className="px-6 py-4">
+                <td>
                   {!driver.approved ? (
-                    <button
-                      onClick={() => handleApprove(driver._id)}
-                      className="text-green-600 hover:text-green-800"
-                    >
+                    <button className="btn-approve" onClick={() => handleApprove(driver._id)}>
                       Approve
                     </button>
                   ) : (
-                    <span className="text-green-600 text-sm">✔ Verified</span>
+                    <span className="verified">✔ Verified</span>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        {filteredDrivers.length === 0 && <p className="no-data">No drivers found</p>}
       </div>
 
-      {filteredDrivers.length === 0 && (
-        <div className="text-center py-8 text-gray-500">No drivers found</div>
-      )}
-
-      <div className="flex justify-between items-center mt-6">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
+      <div className="pagination">
+        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
           Previous
         </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
+        <span>Page {currentPage} of {totalPages}</span>
+        <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
           Next
         </button>
       </div>
 
       <div className="wallet-container">
-        <h2 className="wallet-title">Wallet Table</h2>
+        <h3>Admin Wallet</h3>
         <table className="wallet-table">
           <thead>
             <tr>
-              <th>User</th>
-              <th>Ride</th>
-              <th>Share</th>
+              <th>User ID</th>
+              <th>Ride ID</th>
+              <th>Share (₹)</th>
             </tr>
           </thead>
           <tbody>
-            {wallet.map((item, index) => (
-              <tr key={index}>
-                <td>{item.User}</td>
-                <td>{item.Ride}</td>
-                <td>{item.Share}</td>
+            {walletEntries.length > 0 ? (
+              walletEntries.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.userId}</td>
+                  <td>{item.rideId}</td>
+                  <td>₹{item.share}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="no-data">No wallet entries found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
