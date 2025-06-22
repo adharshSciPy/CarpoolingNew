@@ -31,7 +31,7 @@ const CreateRide = () => {
         return;
       }
 
-      const payload = { ...values, driver:userId };
+      const payload = { ...values };
 
       const { data } = await api.post('/rides', payload);
       toast.success('Ride created successfully!');

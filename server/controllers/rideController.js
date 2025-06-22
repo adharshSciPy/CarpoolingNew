@@ -1,6 +1,8 @@
 const Ride = require("../models/Ride");
 const Driver = require("../models/Driver");
-const AdminWallet=require("../models/adminWallet")
+const AdminWallet=require("../models/adminWallet");
+const getRoutePolyline = require("../utility");
+
 
 exports.getRides = async (req, res, next) => {
   try {
@@ -122,20 +124,24 @@ exports.getRide = async (req, res, next) => {
 
 exports.createRide = async (req, res, next) => {
   try {
-    // Find driver by user ID
-    const driver = await Driver.findOne({ user: req.body.driver });
+    const { startLocation, endLocation } = req.body;
+    const userId = req.user._id; // ✅ from token
+
+    const driver = await Driver.findOne({ user: userId });
 
     if (!driver || !driver.approved) {
-      return res.status(400).json({
+      console.error("Driver not found or not approved:", userId);
+      return res.status(403).json({
         success: false,
         message: "Driver not found or not approved",
       });
     }
 
-    // Replace the user ID with the actual driver ID in the ride payload
     req.body.driver = driver._id;
 
-    // Create ride
+    const routePolyline = await getRoutePolyline(startLocation, endLocation);
+    req.body.routePolyline = routePolyline;
+
     const ride = await Ride.create(req.body);
 
     res.status(201).json({
@@ -143,9 +149,12 @@ exports.createRide = async (req, res, next) => {
       data: ride,
     });
   } catch (err) {
+    console.error("❌ Ride Creation Failed:", err.message);
     next(err);
   }
 };
+
+
 
 exports.updateRide = async (req, res, next) => {
   try {
