@@ -42,6 +42,16 @@ const DriverSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  reviews: [
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    rating: { type: Number, required: true },
+    feedback: { type: String },
+    ride: { type: mongoose.Schema.Types.ObjectId, ref: "Ride" },
+    createdAt: { type: Date, default: Date.now },
+  }
+],
+
 });
 
 module.exports = mongoose.model("Driver", DriverSchema);
