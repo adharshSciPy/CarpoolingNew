@@ -9,7 +9,6 @@
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
-
 .navbar-container {
   width: 100vw;
   margin: 0 auto;
@@ -18,7 +17,45 @@
   justify-content: space-between;
   height: 4rem;
   align-items: center;
+
+  /* Modern radial + transparency effect */
+  background: radial-gradient(circle at center, #2563eb 20%, #ffffff 100%);
+  backdrop-filter: blur(8px); /* optional for glassy look */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: fadeSlideDown 0.6s ease-in-out;
+  transition: background 0.3s ease;
 }
+
+/* Optional: animate logo or nav links on hover */
+.navbar-container .logo,
+.navbar-container nav a {
+  transition: transform 0.3s ease;
+}
+
+.navbar-container .logo:hover,
+.navbar-container nav a:hover {
+  transform: scale(1.05);
+}
+
+/* Entrance animation */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 .navbar-left {
   display: flex;
@@ -45,7 +82,7 @@
 }
 
 .navbar-link {
-  color: #6b7280;
+  color: #000308;
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -81,7 +118,7 @@
 }
 
 .auth-link {
-  color: #6b7280;
+  color: #000000;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -90,17 +127,22 @@
   border: none;
   cursor: pointer;
   gap: 2rem;
+  margin-right: 30px;
 }
 .auth-link1{
-  margin-right: 10px;
-  color: #6b7280;
+  margin-right: 30px;
+  color: #000000;
+}
+.auth-link2{
+ margin-right: 30px;
+  color: #01040a;
 }
 .auth-link1:hover {
-  color: #374151;
+  color: #3b82f6;
 }
 
 .auth-link:hover {
-  color: #374151;
+  color: #3b82f6;
 }
 
 .logout {

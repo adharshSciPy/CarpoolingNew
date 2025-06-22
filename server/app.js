@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error.js');
 
+
 const authRoutes = require('./routes/authRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
 const driverRoutes = require('./routes/driverRoutes.js');
@@ -32,6 +33,8 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/drivers', driverRoutes);
 app.use('/api/v1/rides', rideRoutes);
 app.use('/api/v1/chat', chatRoutes);
+
+
 
 
 // Error handler middleware

@@ -47,6 +47,9 @@ const Layout = () => {
           <div className="navbar-right">
             {user ? (
               <div className="auth-links">
+                 <Link to="/contact-us" className="auth-link2">
+                  Contact Us
+                </Link>
                 <Link to="/my-rides" className="auth-link1">
                   Ride Status
                 </Link>

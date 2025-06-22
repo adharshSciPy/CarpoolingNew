@@ -20,6 +20,7 @@ import DriverDetails from "./pages/driverDetails/DriverDetails";
 import AdminWallet from "./pages/admin/AdminWallet";
 import ChatApp from "./components/chat/ChatApp";
 import ChatListPage from "./pages/chatlist/ChatListPage";
+import ContactUs from "./components/contactus/ContactUs";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/my-rides" element={<MyRides />} />
           <Route path="/chat" element={<ChatApp />} />
           <Route path="/chatlist" element={<ChatListPage />} />
+          <Route path="/contact-us" element={<ContactUs />} />
 
           {/* Driver Routes (Protected) */}
           <Route
