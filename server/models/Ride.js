@@ -47,6 +47,8 @@
       enum: ['scheduled', 'in-progress', 'completed', 'cancelled'],
       default: 'scheduled',
     },
+    routePolyline: String, // encoded string
+
     createdAt: {
       type: Date,
       default: Date.now,
