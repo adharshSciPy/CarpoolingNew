@@ -1,9 +1,13 @@
 .layout {
   min-height: 100vh;
-  background-color: #f3f4f6;
-  font-family: 'Segoe UI', sans-serif;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+    url('../../assets/Screenshot\ 2025-06-16\ 230122.png'); /* ✅ Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
-
 /* Navbar */
 .navbar {
   background-color: white;
@@ -17,8 +21,44 @@
   justify-content: space-between;
   height: 4rem;
   align-items: center;
-  background: radial-gradient(circle at center, #2563eb, #ffffff);
+
+  /* Modern radial + transparency effect */
+  background: radial-gradient(circle at center, #2563eb 20%, #ffffff 100%);
+  backdrop-filter: blur(8px); /* optional for glassy look */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: fadeSlideDown 0.6s ease-in-out;
+  transition: background 0.3s ease;
 }
+
+/* Optional: animate logo or nav links on hover */
+.navbar-container .logo,
+.navbar-container nav a {
+  transition: transform 0.3s ease;
+}
+
+.navbar-container .logo:hover,
+.navbar-container nav a:hover {
+  transform: scale(1.05);
+}
+
+/* Entrance animation */
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 
 .navbar-left {
