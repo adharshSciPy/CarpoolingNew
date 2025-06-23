@@ -21,6 +21,8 @@ import AdminWallet from "./pages/admin/AdminWallet";
 import ChatApp from "./components/chat/ChatApp";
 import ChatListPage from "./pages/chatlist/ChatListPage";
 import ContactUs from "./components/contactus/ContactUs";
+import AdminProtectedRoute from "./AdminProtectedRoute";
+import AdminLogin from "./pages/admin/AdminLogin";
 
 function App() {
   return (
@@ -29,8 +31,12 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<AdminLogin/>}/>
+        <Route element={<AdminProtectedRoute />}>
+        <Route path="/admin-dash" element={<ManageDrivers />} />
 
-        <Route path="/admin" element={<ManageDrivers />} />
+        </Route>
+
         <Route path="/admin-driver/:id" element={<DriverDetails />} />
         <Route path="/adminwallet" element={<AdminWallet />} />
 

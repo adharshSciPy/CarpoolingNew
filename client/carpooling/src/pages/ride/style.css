@@ -493,13 +493,32 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.2s ease;
+  outline:none
+
+}
+.search-btn12{
+   background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  position: relative;
+  right: 20px;
+  outline:none
 }
 
-.search-btn:hover,
+/* .search-btn:hover,
 .clear-btn:hover {
   transform: scale(1.1);
+} */
+.search-btn:focus,
+.clear-btn:focus,
+.search-btn12:focus {
+  outline: none;
 }
-
 /* Icons */
 .search-icon {
   color: #2563eb; /* blue */

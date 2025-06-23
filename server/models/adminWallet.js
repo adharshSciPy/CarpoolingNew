@@ -10,5 +10,8 @@ userId:{
 share:{
     type:Number
 }
-})
+},
+ {
+    timestamps: true, 
+  })
   module.exports = mongoose.model('adminWallet', adminWallet);

@@ -10,6 +10,8 @@ const userRoutes = require('./routes/userRoutes.js');
 const driverRoutes = require('./routes/driverRoutes.js');
 const rideRoutes = require('./routes/rideRoutes.js');
 const chatRoutes = require('./routes/chatRouter.js');
+const adminRoutes = require('./routes/adminRoute.js');
+
 
 const app = express();
 
@@ -33,6 +35,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/drivers', driverRoutes);
 app.use('/api/v1/rides', rideRoutes);
 app.use('/api/v1/chat', chatRoutes);
+app.use('/api/v1/admin',adminRoutes );
 
 
 

@@ -79,7 +79,7 @@ const RidesList = () => {
           onChange={(e) => setEndSearch(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
         />
-        <button className="search-btn" onClick={handleSearch} title="Search">
+        <button className="search-btn12" onClick={handleSearch} title="Search">
           <FiSearch className="search-icon" />
         </button>
         <button className="clear-btn" onClick={handleClear} title="Clear">
